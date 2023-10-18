@@ -1,53 +1,47 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards } from '@nestjs/common';
-import { ProductsService } from './Products.service';
-import { Product } from './Product.entity';
-import { AuthGuard } from '@nestjs/passport';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
+import { ProductsService } from './products.service';
+import { Product } from './product.entity';
 
-@Controller('Products')
+@Controller('products')
 export class ProductsController {
-    constructor(private readonly ProductsService:ProductsService) {}
+    constructor(private readonly productsService: ProductsService) {}
 
-    //Get all Products
-    @UseGuards(AuthGuard)
-    @Get()
-    findAll(): Promise<Product[]>{
-        return this.ProductsService.findAll();
-    }
-
-    //Get one Product
-    @UseGuards(AuthGuard)
+    //Get one product
     @Get(':id')
     async findOne(@Param('id') id: number): Promise<Product>{
-        const Product =  await this.ProductsService.findOne(id);
-        if(!Product) {
-            throw new Error('The Product with ID "${id}" not found');
+        const product = await this.productsService.findOne(id);
+        if(!product) {
+            throw new HttpException(`Book with ID ${id} not found`, HttpStatus.NOT_FOUND);
         } else{
-            return Product;
+            return product;
         }
     }
 
-    //Create Product
-    @UseGuards(AuthGuard)
+    //Get all products
+    @Get()
+    findAll(): Promise<Product[]>{
+        return this.productsService.findAll();
+    }
+
+    //Create a new product
     @Post()
-    async create(@Body() Product: Product): Promise<Product> {
-        return await this.ProductsService.create(Product);
+    async create(@Body() product: Product): Promise<Product>{
+        return await this.productsService.create(product);
     }
 
-    //Update a Product
-    @UseGuards(AuthGuard) 
+    //Update a product
     @Put(':id')
-    async update(@Param('id') id: number, @Body() Product:Product): Promise<Product>{
-        return this.ProductsService.update(id, Product);
+    async update(@Param('id') id: number, @Body() product: Product): Promise<Product>{
+        return this.productsService.update(id,product);
     }
 
-    //Delete Product
-    @UseGuards(AuthGuard)
+    //Delete product
     @Delete(':id')
     async delete(@Param('id') id: number): Promise<void> {
-        const Product = await  this.ProductsService.findOne(id);
-        if(!Product){
-            throw new Error('Product not found');
+        const product = await this.productsService.findOne(id);
+        if(!product){
+            throw new HttpException(`Book with ID ${id} not found`, HttpStatus.NOT_FOUND);
         }
-        return this.ProductsService.delete(id);
+        return this.productsService.delete(id);
     }
 }
