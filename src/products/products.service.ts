@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from './product.entity';
@@ -7,31 +7,31 @@ import { Product } from './product.entity';
 export class ProductsService {
     constructor(
         @InjectRepository(Product)
-        private ProductsRepository: Repository<Product>,
+        private productsRepo: Repository<Product>,
     ) {}
 
     async findAll(): Promise<Product[]> {
-        return await this.ProductsRepository.find();
+        return this.productsRepo.find();
     }
 
-    async findOne (id: number): Promise<Product> {
-        return  await this.ProductsRepository.findOne({where : { id } });
+    async findOne(id: number): Promise<Product> {
+        return await this.productsRepo.findOne({ where: { id } });
     }
 
-    //Create a new Product
-    async create(Product: Product): Promise<Product> {
-        const newProduct = this.ProductsRepository.create(Product);
-        return await this.ProductsRepository.save(newProduct);
+    //Create a new product
+    async create(product: Product): Promise<Product> {
+        const newProduct = this.productsRepo.create(product);
+        return await this.productsRepo.save(newProduct);
     }
 
-    //Update a Product
-    async update(id: number, Product: Product): Promise<Product> {
-        await this.ProductsRepository.update(id, Product);
-        return await this.ProductsRepository.findOneOrFail({where : { id } });
+    //Update a product
+    async update(id: number, product: Product): Promise<Product> {
+        await this.productsRepo.update(id,product);
+        return await this.productsRepo.findOneOrFail({ where : { id } });
     }
 
-    //Delete a Product
-    async delete(id: number): Promise<void> {
-        await this.ProductsRepository.delete(id);
+    //Delete a product
+    async delete(id:number){
+        await this.productsRepo.delete(id);
     }
 }
