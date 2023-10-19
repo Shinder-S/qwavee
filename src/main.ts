@@ -10,13 +10,11 @@ async function bootstrap() {
   .setTitle('Product ware house')
   .setDescription('The product API description, create, update and delete')
   .setVersion('1.0')
-  .addServer('http://localhost:3000/api/qwavee')
-  .addTag('products')
-  .addTag('users')
+  .addServer('http://localhost:3000')
   .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('/api', app, document);
+  SwaggerModule.setup('/', app, document);
 
   await app.listen(3000);
 }
