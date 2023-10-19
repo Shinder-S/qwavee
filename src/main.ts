@@ -11,6 +11,8 @@ async function bootstrap() {
   .setDescription('The product API description, create, update and delete')
   .setVersion('1.0')
   .addServer('http://localhost:3000/api/qwavee')
+  .addTag('products')
+  .addTag('users')
   .build();
 
   const document = SwaggerModule.createDocument(app, config);

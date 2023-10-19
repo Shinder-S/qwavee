@@ -1,26 +1,29 @@
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { Product } from './product.entity';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
+
+    //Get all products
+    @Get()
+    findAll(): Promise<Product[]>{
+        return this.productsService.findAll();
+    }
 
     //Get one product
     @Get(':id')
     async findOne(@Param('id') id: number): Promise<Product>{
         const product = await this.productsService.findOne(id);
         if(!product) {
-            throw new HttpException(`Book with ID ${id} not found`, HttpStatus.NOT_FOUND);
+            throw new Error(`Product with ID ${id} not found`);
         } else{
             return product;
         }
-    }
-
-    //Get all products
-    @Get()
-    findAll(): Promise<Product[]>{
-        return this.productsService.findAll();
     }
 
     //Create a new product
